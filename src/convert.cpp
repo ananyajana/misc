@@ -1,7 +1,8 @@
 /* convert a binary/octal/hexadecimal string to decimal number.
 The number should fit in 128 bits, bit/digit should be valid
 0B0100 - binary, 032 - Octal, 0x34F - hesadecimal number. conversion
-should be done by shifting */
+should be done by shifting 
+Author: Ananya Jana*/
 
 #include <stdio.h>
 #include <stdlib.h>
