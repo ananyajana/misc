@@ -43,7 +43,7 @@ unsigned long convert(char* ptr)
 				printf("Number exceeds  128 bit limit.\n");
 				exit(1);	
 			}
-			printf("A octal number\n");
+			printf("An octal number\n");
 		}
 	}
 }
