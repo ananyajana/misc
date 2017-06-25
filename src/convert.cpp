@@ -6,6 +6,7 @@ Author: Ananya Jana*/
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 unsigned long convert(char*);	// function to convert
 
@@ -20,7 +21,8 @@ int main()
 
 unsigned long convert(char* ptr)
 {
-	int len = strlen(ptr);
+	int len = strlen(ptr), i = 2;
+	unsigned int num;
 	
 	if('0' == ptr[0]){
 		printf("Can be a valid number!");
@@ -30,7 +32,20 @@ unsigned long convert(char* ptr)
 				printf("Number exceeds  128 bit limit.\n");
 				exit(1);	
 			}
-			
+			num = 0;
+			for(;i < len && ptr[i]; ++i){
+				num = num << 1;
+				if(ptr[i] == '1')
+					num = num | 0x01;
+				else if(ptr[i] == '0')
+					num = num | 0x00;
+				else{
+					printf("Error! only valid binary digits are 0 and 1.\n");
+					exit(1);
+				}	
+				printf("%d th iteration.\n", i);
+			}
+			printf("The number is: %u", num);
 		}
 		else if(('x' == ptr[1])|| ('X' == ptr[1])){
 			printf("A hexadecimal number\n");
