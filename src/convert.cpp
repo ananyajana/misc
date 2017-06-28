@@ -1,4 +1,4 @@
-/* convert a binary/octal/hexadecimal string to decimal number.
+/* convert a binary/octal/hexadecimal string to unsigned long long number(128 bit).
 The number should fit in 128 bits, bit/digit should be valid
 0B0100 - binary, 032 - Octal, 0x34F - hesadecimal number. conversion
 should be done by shifting 
@@ -9,6 +9,7 @@ Author: Ananya Jana*/
 #include <string.h>
 
 unsigned long convert(char*);	// function to convert
+static unsigned long long convert2(char*, char*, base);
 
 int main()
 {
@@ -17,6 +18,36 @@ int main()
 	scanf("%s", ptr);
 	printf("The string is: %s\n", ptr);
 	convert(ptr);
+}
+
+static unsigned long long convert2(char* ptr, char* endptr)
+{
+	int base = 0;
+	
+	//skip the spaces and sign
+	
+	//determing the base of the number which has been passed
+	if('0' == ptr[0]){
+		if(('b' == ptr[1]) || ('B' == ptr[1])){
+			base = 2;
+		}
+		else if(('x' == ptr[1])|| ('X' == ptr[1])){
+			base = 16;	
+		}	
+		else if(('0' == ptr[1])|| ('0' == ptr[1])){
+			base = 8;
+		}
+		else{
+			printf("Error!");
+			exit(1);
+		}
+	}
+	else if(isdigit(ptr[0]))
+		base = 10;
+		
+	// if base is 2, then convert directly by shifting
+	
+	// for all other bases convert by the usual method: refer strtoull
 }
 
 unsigned long convert(char* ptr)
@@ -53,6 +84,7 @@ unsigned long convert(char* ptr)
 				printf("Number exceeds 128 bit limit.\n");
 				exit(1);	
 			}
+			
 		}	
 		else{
 			if(len > 45){		// actual octal number's length can be maximum 43 chars + 0b/0B  = 45
