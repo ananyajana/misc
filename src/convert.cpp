@@ -23,27 +23,47 @@ int main()
 static unsigned long long convert2(char* ptr, char* endptr)
 {
 	int base = 0;
+	const char *s;
+	char c;
 	
-	//skip the spaces and sign
+
+	//skip the spaces
+	s = ptr;
+	do{
+		c = *s++;
+	}while(isspace((unsigned char)c));
+	
+	if (c == '-') {
+		printf("Negative number is not allowed.\n");
+		exit(1);
+	}
+	else {
+		if (c == '+')
+			c = *s++;	
+	}
 	
 	//determing the base of the number which has been passed
-	if('0' == ptr[0]){
-		if(('b' == ptr[1]) || ('B' == ptr[1])){
+	if('0' == c){
+		if(('b' == *s) || ('B' == *s)){
 			base = 2;
 		}
-		else if(('x' == ptr[1])|| ('X' == ptr[1])){
-			base = 16;	
+		else if(('x' == *s)|| ('X' == *s)){
+			base = 16;
 		}	
-		else if(('0' == ptr[1])|| ('0' == ptr[1])){
+		else if(('0' == *s)|| ('0' == *s)){
 			base = 8;
 		}
 		else{
 			printf("Error!");
 			exit(1);
 		}
+		c = s[1];
+		s += 2;
 	}
-	else if(isdigit(ptr[0]))
+	else if(isdigit(c)){
 		base = 10;
+		s += 1;
+	}
 		
 	// if base is 2, then convert directly by shifting
 	
