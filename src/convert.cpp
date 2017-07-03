@@ -22,7 +22,7 @@ int main()
 
 static unsigned long long convert(char* ptr, char* endptr)
 {
-	char c;
+	unsigned char c;
 	int base = 0;
 	const char *s;
 	unsigned int num;
@@ -34,6 +34,7 @@ static unsigned long long convert(char* ptr, char* endptr)
 		c = *s++;
 	}while(isspace((unsigned char)c));
 	
+	//check for signs, -ve numbers are not allowed, +ve sign can be skipped
 	if (c == '-') {
 		printf("Negative number is not allowed.\n");
 		exit(1);
@@ -82,6 +83,57 @@ static unsigned long long convert(char* ptr, char* endptr)
 		}
 		printf("The number is: %u", num);
 	}
+	else if(base == 16){	// if base is 16, then capture each digit in C
+		num = 0;
+		for ( ; ; c = *s++) {
+			if (c >= '0' && c <= '9')
+				c -= '0';
+			else if (c >= 'A' && c <= 'F')
+				c -= 'A' - 10;
+			else if (c >= 'a' && c <= 'f')
+				c -= 'a' - 10;
+			else
+				break;
 	
-	// for all other bases convert by the usual method: refer strtoull
+			c = c << 4;
+			for(int j = 0; j < 4; ++j){
+				num = num << 1;
+				if((c & 0x80) == 0x80)
+					num = num | 0x01;
+				else if((c & 0x80) == 0)
+					num = num | 0x00;
+				else{
+					printf("Error! only valid binary digits are 0 and 1.\n");
+					exit(1);
+				}
+				c = c << 1;
+			}
+		}
+		printf("The number is: %u", num);
+	}	
+	else if(base == 8){
+		num = 0;
+		for ( ; ; c = *s++) {
+			if (c >= '0' && c <= '7')
+				c -= '0';
+			else
+				break;
+	
+			c = c << 5;
+			for(int j = 0; j < 3; ++j){
+				num = num << 1;
+				if((c & 0x80) == 0x80)
+					num = num | 0x01;
+				else if((c & 0x80) == 0)
+					num = num | 0x00;
+				else{
+					printf("Error! only valid binary digits are 0 and 1.\n");
+					exit(1);
+				}
+				c = c << 1;
+			}
+		}
+		printf("The number is: %u", num);
+	}
+
 }
