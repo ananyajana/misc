@@ -23,10 +23,11 @@ int main()
 static unsigned long long convert(char* ptr, char* endptr)
 {
 	unsigned char c;
-	int base = 0;
+	int base, size, count;
 	const char *s;
 	unsigned int num;	// the variable to hold the final decimal value
-	
+	base = size = count = 0;
+	bool converted = true;
 
 	//skip the spaces
 	s = ptr;
@@ -67,10 +68,12 @@ static unsigned long long convert(char* ptr, char* endptr)
 		s += 1;
 	}
 	
+	size = sizeof(unsigned long long)*8;
 	// if base is 2, then convert directly by shifting
 	if(base == 2){
 		num = 0;	// the number is initialized to 0
-		for(; c != '\0'; c = *s++){
+		for(; c != '\0' && count < size; c = *s++){
+			++count;
 			num = num << 1;	// shift number to the left by 1 bit so that the new bit can be added
 			if(c == '1')	
 				num = num | 0x01;	// if the current chacter is '1' then perform bitwise OR of the number and 0x01
@@ -96,7 +99,8 @@ static unsigned long long convert(char* ptr, char* endptr)
 				break;
 	
 			// since the least significant nibble holds the actual value, we use bitwise OR and bitwise SHIFT operations and the pattern 0x08 to get those 4 bits in num 
-			for(int j = 0; j < 4; ++j){
+			for(int j = 0; j < 4 && count < size; ++j){
+				count++;
 				num = num << 1;
 				if((c & 0x08) == 0x08)
 					num = num | 0x01;
@@ -119,8 +123,9 @@ static unsigned long long convert(char* ptr, char* endptr)
 			else
 				break;
 				
-			// since the least bits hold the actual value, we use bitwise OR and bitwise SHIFT operations and the pattern 0x04 to get those 43bits in num
-			for(int j = 0; j < 3; ++j){
+			// since the least 3 bits hold the actual value, we use bitwise OR and bitwise SHIFT operations and the pattern 0x04 to get those 43bits in num
+			for(int j = 0; j < 3 && count < size; ++j){
+				count++;
 				num = num << 1;
 				if((c & 0x04) == 0x04)
 					num = num | 0x01;
@@ -134,6 +139,11 @@ static unsigned long long convert(char* ptr, char* endptr)
 			}
 		}
 		printf("The number is: %u", num);
+	}
+	
+	if(count >= size){
+		printf("Overflow!!\n");
+		converted = false;
 	}
 	
 	if(endptr != NULL)
