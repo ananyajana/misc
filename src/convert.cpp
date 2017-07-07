@@ -9,7 +9,7 @@ Author: Ananya Jana*/
 #include <string.h>
 #include <ctype.h>
 
-static unsigned long long convert(char*, char*);	// function to convert
+static unsigned short int convert(char*, char*);	// function to convert
 
 int main()
 {
@@ -20,12 +20,12 @@ int main()
 	convert(ptr, NULL);
 }
 
-static unsigned long long convert(char* ptr, char* endptr)
+static unsigned short int convert(char* ptr, char* endptr)
 {
 	unsigned char c;
 	int base, size, count;
 	const char *s;
-	unsigned int num;	// the variable to hold the final decimal value
+	unsigned short int num;	// the variable to hold the final decimal value
 	base = size = count = 0;
 	bool converted = true;
 
@@ -68,12 +68,17 @@ static unsigned long long convert(char* ptr, char* endptr)
 		s += 1;
 	}
 	
-	size = sizeof(unsigned long long)*8;
+	size = sizeof(unsigned short int)*8;
+	printf("The size is %d bits.\n", size);
 	// if base is 2, then convert directly by shifting
 	if(base == 2){
 		num = 0;	// the number is initialized to 0
-		for(; c != '\0' && count < size; c = *s++){
+		for(; c != '\0'; c = *s++){
 			++count;
+			if(count > size){
+				printf("Overflow: number of bits = %d.\n", count);
+				exit(1);
+			}
 			num = num << 1;	// shift number to the left by 1 bit so that the new bit can be added
 			if(c == '1')	
 				num = num | 0x01;	// if the current chacter is '1' then perform bitwise OR of the number and 0x01
@@ -99,8 +104,12 @@ static unsigned long long convert(char* ptr, char* endptr)
 				break;
 	
 			// since the least significant nibble holds the actual value, we use bitwise OR and bitwise SHIFT operations and the pattern 0x08 to get those 4 bits in num 
-			for(int j = 0; j < 4 && count < size; ++j){
+			for(int j = 0; j < 4; ++j){
 				count++;
+				if(count > size){
+					printf("Overflow: number of bits = %d.\n", count);
+					exit(1);
+				}
 				num = num << 1;
 				if((c & 0x08) == 0x08)
 					num = num | 0x01;
@@ -124,8 +133,12 @@ static unsigned long long convert(char* ptr, char* endptr)
 				break;
 				
 			// since the least 3 bits hold the actual value, we use bitwise OR and bitwise SHIFT operations and the pattern 0x04 to get those 43bits in num
-			for(int j = 0; j < 3 && count < size; ++j){
+			for(int j = 0; j < 3; ++j){
 				count++;
+				if(count > size){
+					printf("Overflow: number of bits = %d.\n", count);
+					exit(1);
+				}
 				num = num << 1;
 				if((c & 0x04) == 0x04)
 					num = num | 0x01;
@@ -139,11 +152,6 @@ static unsigned long long convert(char* ptr, char* endptr)
 			}
 		}
 		printf("The number is: %u", num);
-	}
-	
-	if(count >= size){
-		printf("Overflow!!\n");
-		converted = false;
 	}
 	
 	if(endptr != NULL)
