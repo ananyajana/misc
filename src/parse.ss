@@ -10,6 +10,7 @@
 ;;                  Parser
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; author: Ananya Jana
+;; Project description: https://www.cs.rutgers.edu/courses/515/classes/fall_2018_kremer/projects/proj1/proj1.pdf
 
 (define CurrentCounter 0)
 
